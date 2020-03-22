@@ -1,0 +1,10 @@
+{
+  "name": "cart",
+  "version": "0.0.1",
+  "description": "cart microservice.",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "morgan": "^1.8.1"
+  }
+}
