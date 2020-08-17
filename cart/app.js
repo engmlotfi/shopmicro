@@ -27,20 +27,29 @@ app.post("/add", function (req, res, next) {
     if (cart["" + obj.custId] === undefined)
         cart["" + obj.custId] = [];
     var c = cart["" + obj.custId];
-    for (ind = 0; ind < c.length; ind++)
-        if (max < c[ind].cartid)
-            max = c[ind].cartid;
-    var cartid = max + 1;
-    var data = {
-        "cartid": cartid,
-        "productID": obj.productID,
-        "name": obj.name,
-        "price": obj.price,
-        "image": obj.image,
-        "quantity": obj.quantity
-    };
-    console.log(JSON.stringify(data));
-    c.push(data);
+
+    const found = c.some(item => item.name === obj.name);
+    if(found){
+        var index = c.findIndex(item => item.name === obj.name);
+        c[index].price = obj.price;
+        c[index].quantity = parseInt(c[index].quantity) + parseInt(obj.quantity);
+    }
+    else {
+        for (ind = 0; ind < c.length; ind++)
+            if (max < c[ind].cartid)
+                max = c[ind].cartid;
+        var cartid = max + 1;
+        var data = {
+            "cartid": cartid,
+            "productID": obj.productID,
+            "name": obj.name,
+            "price": obj.price,
+            "image": obj.image,
+            "quantity": obj.quantity
+        };
+        console.log(JSON.stringify(data));
+        c.push(data);
+    }
 
     res.status(201);
 
@@ -49,18 +58,13 @@ app.post("/add", function (req, res, next) {
 
 });
 
-/* toDO */
 app.delete("/cart/:custId/items/:id", function (req, res, next) {
     var body = '';
     console.log("Delete item from cart: for custId " + req.url + ' ' +
         req.params.id.toString());
-    console.log("delete ");
-
-
-
-
-
-    res.send(' ');
+    console.log("delete item");
+    cart[req.params.custId].splice(req.params.id-1,1);
+    res.send('Item deleted from the cart');
 
 
 });
@@ -80,6 +84,24 @@ app.get("/cart/:custId/items", function (req, res, next) {
 
     res.send(JSON.stringify(cart["" + custId]));
     console.log("cart sent");
+
+});
+
+app.get("/cart/:custId/items/:id", function (req, res, next) {
+
+
+    var custId = req.params.custId;
+    var id = req.params.id - 1;
+    console.log("getCart" + custId);
+
+
+    console.log('custID ' + custId);
+    console.log('itemID ' + id);
+    var c = cart["" + custId];
+    console.log(JSON.stringify(c["" + id], null, 2));
+
+    res.send(JSON.stringify(c["" + id]));
+    console.log("item sent");
 
 });
 

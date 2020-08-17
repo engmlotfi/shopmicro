@@ -28,7 +28,60 @@ var server = http.createServer(function (request, response) {
 
             /* TODO */
             case "/newProduct":
+                console.log("This is newproduct from microservice")
+                var body = '';
+                console.log("add ");
+                request.on('data', function (data) {
+                    body += data;
+                });
 
+                request.on('end', function () {
+                    var obj = qs.parse(body);
+                    console.log(JSON.stringify(obj, null, 2));
+                    var query = "SELECT * FROM Products where name='"+obj.name+"'";
+                    response.writeHead(200, {
+                        'Access-Control-Allow-Origin': '*'
+                    });
+
+                    db.query(
+                        query,
+                        [],
+                        function(err, rows) {
+                            if (err) {
+                                response.end("error");
+                                throw err;
+                            }
+                            if (rows!=null && rows.length>0) {
+                                console.log(" Product already in database");
+                                response.end('{"error": "2"}');
+                            }
+                            else{
+                                query = "INSERT INTO Products (name, quantity, price, image)"+
+                                    "VALUES(?, ?, ?, ?)";
+                                db.query(
+                                    query,
+                                    [obj.name,obj.quantity,obj.price, obj.image],
+                                    function(err, result) {
+                                        if (err) {
+                                            // 2 response is an sql error
+                                            response.end('{"error": "3"}');
+                                            throw err;
+                                        }
+                                        //Success
+                                        theProductId = result.insertId;
+                                        obj.ie = theProductId
+
+                                        response.end('New Product added successfully ');
+
+                                    }
+                                );
+                            }
+
+                        }
+                    );
+
+
+                });
 
                 break;
         } //switch

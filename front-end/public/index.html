@@ -152,13 +152,17 @@
         }
 
         function deleteCartItem(count) {
-            $.post(
-                    "/delete",
-                    {cnt: count},
-                    function (data) {
 
-                    }
-            );
+           $.ajax({
+                type: "DELETE",
+                url: "/cart/" + count.toString() ,
+                id: count.toString(),
+                success: function () {
+                    window.alert("Item Deleted");
+                    getCart();
+                }
+            });
+
 
         }
 
@@ -217,7 +221,7 @@
             }
             out += "</table>";
             out += "<br>";
-            out += "Total: "+total +'<br>';
+            out += "<h2>Total: "+total +'</h2><br>';
             out += '<button onclick="checkout()">Checkout</button><br>';
             out+='<div id="cartmessage"></div>';
             document.getElementById(name).innerHTML = out;
@@ -301,13 +305,16 @@
                 event.preventDefault();
                 $("#newProduct").hide();
                 var fd = $('#newProductForm').serialize();
-
-                $.post(
-                        "/newProduct",
-                        fd,
+                alert("This is event!");
+                $.post({
+                        type: "POST",
+                        url: "/newProduct",
+                        contentType: 'application/json',
+                        data: fd,
                         function (data) {
                             console.log(data);
-                            $('#logonmessage').html(data);
+                            $('#newProductForm').html(data);
+                        }
                         }
                 );
 
@@ -399,7 +406,7 @@
                 <input type="text" name="price" value="">
                 <br>
                 Image:<br>
-                <input type="file" name="image" value="">
+                <input type="text" name="image" value="">
                 <br>
                 <input type="submit">
             </form>

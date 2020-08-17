@@ -77,14 +77,14 @@
     var custId = helpers.getCustomerId(req, app.get("env"));
 
     var options = {
-      uri: endpoints.cartsUrl + "/" + custId + "/items/" + req.params.id.toString(),
+      uri: endpoints.cartsUrl + "/cart/" + custId + "/items/" + req.params.id.toString(),
       method: 'DELETE'
     };
     request(options, function (error, response, body) {
       if (error) {
         return next(error);
       }
-      console.log('Item deleted with status: ' + response.statusCode);
+      console.log('Item deleted with status: ' + options.uri +' ' + response.statusCode);
       helpers.respondStatus(res, response.statusCode);
     });
   });

@@ -3,7 +3,7 @@
 
   module.exports = {
    catalogueUrl:  "http://localhost:3002",
-   newProductUrl:  "http://localhost:3002",
+   newProductUrl:  "http://localhost:3002/newProduct",
     tagsUrl:       "http://localhost:8082/catalogue/tags",
   //catalogueUrl:  "http://localhost:8081",
   // tagsUrl:       "http://localhost:8081",

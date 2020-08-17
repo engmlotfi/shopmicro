@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FrontEndService" type="NodeJSConfigurationType" activateToolWindowBeforeRun="false" path-to-js-file="server.js" working-dir="$PROJECT_DIR$/front-end">
+    <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSStartBrowserRunConfigurationExtension">
+      <browser start="true" with-js-debugger="true" url="http://localhost:8079/" />
+    </EXTENSION>
+    <method v="2" />
+  </configuration>
+</component>
