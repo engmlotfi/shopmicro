@@ -1,0 +1,60 @@
+syntax = "proto3"; //Specify proto3 version.
+
+package usersPackage;
+
+service UsersService {
+  //user login
+  rpc loginUser(UserLogin) returns (User){}
+  // get user role
+  rpc getRole(UserID) returns (UserRole){}
+  //create new user
+  rpc createUser(ManageUser) returns (result){}
+  //update user
+  rpc updateUser(ManageUser) returns (result){}
+  //delete user
+  rpc deleteUser(DeleteUser) returns (result){}
+  // passes only user Id, return full user details if exist, empty if does not exist
+  rpc getUser(ManageUser) returns (User){}
+  //Get all users
+  rpc getUsers(UserID) returns (Users){}
+
+
+
+}
+
+
+message UserLogin {
+  string name = 1;
+  string password = 2;
+}
+message ManageUser{
+  string admin_id = 1;
+  User managedUser = 2;
+  string type =3;
+}
+
+message DeleteUser{
+  string admin_id = 1;
+  string userID = 2;
+}
+message UserID {
+  string userID = 1;
+}
+message UserRole {
+  string role = 1;
+}
+message Users{
+  repeated User users = 1;
+}
+message User {
+  string userID = 1;
+  string password = 2;
+  string name = 3;
+  string address = 4;
+  string role = 5;
+}
+
+message result {
+  string status = 1;
+}
+message Empty {}
