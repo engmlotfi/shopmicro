@@ -1,0 +1,41 @@
+syntax = "proto3"; //Specify proto3 version.
+
+package cart;
+
+service CartService {
+  rpc getItems(CustomerID) returns (Cart){}
+  rpc addItem(NewItem) returns (result){}
+  rpc deleteItem(ItemID) returns (result){}
+  rpc checkOut(CustomerID) returns (result){}
+}
+
+message CustomerID {
+  string custId = 1;
+}
+
+message ItemID {
+  string custId = 1;
+  uint32 itemId = 2;
+}
+
+message NewItem {
+  string custId = 1;
+  uint32 productID = 2;
+  uint32 quantity = 3;
+}
+
+message Item {
+  uint32 productID = 1;
+  string name = 3;
+  uint32 quantity = 2;
+  float price = 4;
+  string image = 5;
+}
+message Cart {
+  repeated Item items= 1;
+}
+
+message result {
+  string status = 1;
+}
+message Empty {}

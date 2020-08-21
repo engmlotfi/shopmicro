@@ -1,0 +1,54 @@
+syntax = "proto3"; //Specify proto3 version.
+
+package catalogue;
+
+service CatalogueService {
+  rpc getProducts(Empty) returns (Products){}
+  rpc getProduct(ProductID) returns (Product){}
+  rpc addProduct(NewProduct) returns (result){}
+  rpc deleteProduct(DeleteProduct) returns (result){}
+  rpc updateProduct(UpdateProduct) returns (result){}
+}
+
+message Empty {}
+
+message ProductID {
+  uint32 id = 1;
+}
+
+message Product {
+  uint32 id = 1;
+  string name = 2;
+  uint32 quantity = 3;
+  float price = 4;
+  string image = 5;
+}
+
+message Products{
+  repeated Product products = 1;
+}
+
+message NewProduct {
+  string user_id=1;
+  string name = 2;
+  uint32 quantity = 3;
+  float price = 4;
+  string image = 5;
+}
+
+message UpdateProduct {
+  string user_id=1;
+  uint32 id = 2;
+  string name = 3;
+  uint32 quantity = 4;
+  float price = 5;
+  string image = 6;
+}
+message DeleteProduct {
+  string user_id=1;
+  uint32 id = 2;
+}
+
+message result {
+  string status = 1;
+}
