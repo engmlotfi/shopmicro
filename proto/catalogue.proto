@@ -5,12 +5,12 @@ package catalogue;
 service CatalogueService {
   rpc getProducts(Empty) returns (Products){}
   rpc getProduct(ProductID) returns (Product){}
-  rpc addProduct(NewProduct) returns (result){}
-  rpc deleteProduct(DeleteProduct) returns (result){}
-  rpc updateProduct(UpdateProduct) returns (result){}
-}
+  rpc createProduct(NewProduct) returns (Product){}
 
-message Empty {}
+  //TODO : Full Crud
+/*  rpc deleteProduct(DeleteProduct) returns (result){}
+  rpc updateProduct(UpdateProduct) returns (result){}*/
+}
 
 message ProductID {
   uint32 id = 1;
@@ -29,15 +29,16 @@ message Products{
 }
 
 message NewProduct {
-  string user_id=1;
+  string admin_id=1;
   string name = 2;
   uint32 quantity = 3;
   float price = 4;
   string image = 5;
 }
 
-message UpdateProduct {
-  string user_id=1;
+//TODO : Full Crud
+/*message UpdateProduct {
+  string admin_id=1;
   uint32 id = 2;
   string name = 3;
   uint32 quantity = 4;
@@ -46,9 +47,11 @@ message UpdateProduct {
 }
 message DeleteProduct {
   string user_id=1;
-  uint32 id = 2;
+  uint32 id = 2;*/
 }
 
 message result {
   string status = 1;
 }
+
+message Empty {}

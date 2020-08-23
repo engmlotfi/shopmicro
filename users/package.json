@@ -2,7 +2,7 @@
   "name": "node-api",
   "main": "app.js",
   "dependencies": {
-    "mysql": "^2.13.0",
+    "mysql": "^2.18.1",
     "@grpc/proto-loader": "^0.5.4",
     "grpc": "^1.24.2"
   }

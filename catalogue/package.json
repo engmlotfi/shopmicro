@@ -3,6 +3,11 @@
     "main": "server.js",
     "dependencies": {
         "alert": "^1.0.0",
-        "mysql": "^2.18.1"
+        "mysql": "^2.18.1",
+        "body-parser": "^1.15.1",
+        "express": "^4.13.4",
+        "@grpc/proto-loader": "^0.5.4",
+        "grpc": "^1.24.2",
+        "async": "^1.5.2"
     }
 }

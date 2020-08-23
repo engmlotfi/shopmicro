@@ -6,10 +6,15 @@ const bodyParser = require("body-parser");
 const app = express();
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
-const usersService = new grpc.Server();
-const PROTO_FILE_PATH = path.join(__dirname, "..", "proto", "users.proto");
-const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH, {});
-const grpcObject = grpc.loadPackageDefinition(packageDefinition);
+const usersServer = new grpc.Server();
+const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "users.proto");
+const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH, {keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+});
+const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const mysql = require('mysql');
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const SERVER_PORT = process.env.PORT || 3001;
@@ -19,8 +24,10 @@ const db = mysql.createConnection({
     password: 'Micro@123',
     database: 'shop'
 });
+
+usersServer.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
 //gRPC Mapping
-usersService.addService(grpcObject.UsersService.service,
+usersServer.addService(protoDescriptor.UsersService.service,
     {
         "loginUser": loginUser,
         "createUser" : createUser ,
@@ -31,10 +38,8 @@ usersService.addService(grpcObject.UsersService.service,
         "getRole":getRole
     });
 
-usersService.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
-
 //start the grpc server
-usersService.start();
+usersServer.start();
 console.log('Service started at port: ' + SERVER_PORT);
 
 /*=====================Microservice Methods=====================*/

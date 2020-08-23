@@ -1,15 +1,23 @@
 //Service dependencies
 const express = require("express");
+const users = require("./stub/users");
+const catalogue = require("./stub/catalogue");
+const orders = require("./stub/orders");
 const morgan = require("morgan");
 const path = require("path");
 const bodyParser = require("body-parser");
 const app = express();
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
-const usersService = new grpc.Server();
-const PROTO_FILE_PATH = path.join(__dirname, "..", "proto", "cart.proto");
-const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH, {});
-const grpcObject = grpc.loadPackageDefinition(packageDefinition);
+const cartsServer = new grpc.Server();
+const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "cart.proto");
+const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH,  {keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+});
+const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const mysql = require('mysql');
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const SERVER_PORT = process.env.PORT || 3003;
@@ -21,19 +29,16 @@ const db = mysql.createConnection({
     database: 'shop'
 });
 //gRPC Mapping
-cartService.addService(grpcObject.CartService.service,
+cartsServer.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
+cartsServer.addService(protoDescriptor.CartService.service,
     {
         "addItem": addItem,
         "deleteItem" : deleteItem ,
         "getItems" : getItems ,
         "checkOut": checkOut
-
     });
-
-usersService.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
-
 //start the grpc server
-usersService.start();
+cartsServer.start();
 console.log('Service started at port: ' + SERVER_PORT);
 
 app.use(morgan('combined'));
@@ -127,12 +132,12 @@ function getItems(call, callback){
 
 function checkOut(call,callback){
     var custId=call.request.custId;
-    user.getRole(custId,(role,err)=> {
+    users.getRole(custId,(role,err)=> {
         if (err) {
             callback(err, null);
             return;
         }
-        //TODO .status is wrong, should be .role
+
         if (role.role != "customer") {
             callback("Invalid customer", null);
             return;
