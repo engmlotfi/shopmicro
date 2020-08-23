@@ -107,9 +107,6 @@ function createProduct(call, callback) {
 
     });
 
-    break;
-
-
 }
 
 function deleteProduct(call, callback){
