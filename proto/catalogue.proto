@@ -47,8 +47,8 @@ message NewProduct {
 }
 message DeleteProduct {
   string user_id=1;
-  uint32 id = 2;*/
-}
+  uint32 id = 2;
+}*/
 
 message result {
   string status = 1;

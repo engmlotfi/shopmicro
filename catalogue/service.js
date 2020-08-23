@@ -35,8 +35,8 @@ catalogueServer.addService(protoDescriptor.CatalogueService.service,
         "getProduct": getProduct,
         "createProduct": createProduct,
         //TODO : Full CRUD
-/*        "deleteProduct": doDeleteProduct,*/
-/*        "updateProduct": doUpdateProduct*/
+        "deleteProduct": deleteProduct,
+/*        "updateProduct": updateProduct*/
     });
 //start the grpc server
 catalogueServer.start();
@@ -110,11 +110,8 @@ function createProduct(call, callback) {
 }
 
 function deleteProduct(call, callback){
-    console.log("Delete item from cart: for custId " + call.request.custId + " " + call.request.itemId.toString() + " ");
-    console.log("delete item");
-    cart[call.request.custId].splice(call.request.itemId-1,1);
-    callback(null,{ status: "success" });
-
+//TODO : delte product
+    console.log("delete product");
 }
 
 function getProducts(call, callback){

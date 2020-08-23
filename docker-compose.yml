@@ -1,0 +1,95 @@
+version: '3'
+services:
+  front-end:
+    build:
+      context: .
+      dockerfile: front-end/Dockerfile
+    container_name: front-end
+    environment:
+      - "UsersHost=users:3001"
+      - "CatalogueHost=catalogue:3002"
+      - "CartHost=cart:3003"
+      - "OrdersHost=orders:3004"
+      - "PORT=8080"
+    depends_on:
+      - users
+      - catalogue
+      - cart
+      - orders
+    ports:
+      - "80:8080"
+
+  users:
+    build:
+      context: .
+      dockerfile: users/Dockerfile
+    container_name: users
+    environment:
+      - "DbHost=database"
+      - "PORT=3001"
+    depends_on:
+      - database
+    ports:
+      - "3001:3001"
+
+  catalogue:
+    build:
+      context: .
+      dockerfile: catalogue/Dockerfile
+    container_name: catalogue
+    environment:
+      - "UsersHost=users:3001"
+      - "DbHost=mysql-db"
+      - "PORT=3002"
+    depends_on:
+      - users
+      - database
+    ports:
+      - "3002:3002"
+  cart:
+    build:
+      context: .
+      dockerfile: cart/Dockerfile
+    container_name: cart
+    environment:
+      - "UsersHost=users:3001"
+      - "CatalogueHost=catalogue:3002"
+      - "OrdersHost=orders:3004"
+      - "DbHost=mysql-db"
+      - "PORT=3003"
+    depends_on:
+      - users
+      - catalogue
+      - orders
+      - database
+    ports:
+      - "3003:3003"
+
+  orders:
+    build:
+      context: .
+      dockerfile: orders/Dockerfile
+    container_name: orders
+    environment:
+      - "UsersHost=users:3001"
+      - "CatalogueHost=catalogue:3002"
+      - "DbHost=database"
+      - "PORT=3004"
+    depends_on:
+      - users
+      - catalogue
+      - database
+    ports:
+      - "3004:3004"
+
+  database:
+    build:
+      context: .
+      dockerfile: mysql-db/Dockerfile
+    volumes:
+      - /data/mysql:/var/lib/mysql
+    container_name: database
+    environment:
+      - "PORT=3306"
+    ports:
+      - "3306:3306"
