@@ -14,7 +14,7 @@
     });
     const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
     //Create gRPC client
-    var grpc_client = new protoDescriptor.users.UsersService(
+    var grpc_client = new protoDescriptor.usersPackage.UsersService(
         UsersHost,
         grpc.credentials.createInsecure()
     );

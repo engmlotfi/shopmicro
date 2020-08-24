@@ -1,14 +1,11 @@
 //Service dependencies
-const express = require("express");
 const users = require("./stub/users");
-const morgan = require("morgan");
 const path = require("path");
-const bodyParser = require("body-parser");
-const app = express();
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 const catalogueServer = new grpc.Server();
-const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "cart.proto");
+const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "catalogue.proto");
+console.log(PROTO_FILE_PATH);
 const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH,  {keepCase: true,
     longs: String,
     enums: String,
@@ -28,9 +25,8 @@ const db = mysql.createConnection({
 });
 //gRPC Mapping
 catalogueServer.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
-catalogueServer.addService(protoDescriptor.CatalogueService.service,
+catalogueServer.addService(protoDescriptor.cataloguePackage.CatalogueService.service,
     {
-
         "getProducts": getProducts,
         "getProduct": getProduct,
         "createProduct": createProduct,
@@ -42,11 +38,6 @@ catalogueServer.addService(protoDescriptor.CatalogueService.service,
 catalogueServer.start();
 console.log('Service started at port: ' + SERVER_PORT);
 
-app.use(morgan('combined'));
-app.use(morgan("dev", {}));
-app.use(bodyParser.json());
-
-//app.use(morgan("dev", {}));
 /*=====================Microservice Methods=====================*/
 
 function createProduct(call, callback) {

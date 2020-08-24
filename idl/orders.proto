@@ -1,0 +1,57 @@
+syntax = "proto3"; //Specify proto3 version.
+
+package ordersPackage;
+
+service OrdersService {
+
+  rpc addOrder(Cart) returns (result) {}
+  rpc getOrders(Customer) returns (Orders) {}
+  rpc getOrder(OrderID) returns (OrderDetails) {}
+}
+
+message result {
+  string status = 1;
+}
+
+message Item {
+  uint32 product_id = 1;
+  uint32 quantity = 2;
+}
+
+message Cart {
+  string customer_id = 1;
+  repeated Item items= 2;
+}
+
+message Customer {
+  string customer_id = 1;
+}
+message ItemDetails {
+  uint32 product_id = 1;
+  string name = 3;
+  uint32 quantity = 2;
+  float price = 4;
+  string image = 5;
+}
+
+message Order{
+  uint32 id =1;
+  string saledate =2;
+  float total_price = 3;
+  string status =4;
+}
+
+message Orders{
+  repeated Order orders =1;
+
+}
+
+message OrderID{
+  uint32 id =1;
+}
+
+message OrderDetails{
+  repeated ItemDetails items =1;
+}
+
+message Empty {}

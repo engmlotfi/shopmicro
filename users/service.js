@@ -1,13 +1,10 @@
 //Service dependencies
-const express = require("express");
-const morgan = require("morgan");
 const path = require("path");
-const bodyParser = require("body-parser");
-const app = express();
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 const usersServer = new grpc.Server();
 const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "users.proto");
+console.log(PROTO_FILE_PATH);
 const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH, {keepCase: true,
     longs: String,
     enums: String,
@@ -27,7 +24,7 @@ const db = mysql.createConnection({
 
 usersServer.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
 //gRPC Mapping
-usersServer.addService(protoDescriptor.UsersService.service,
+usersServer.addService(protoDescriptor.usersPackage.UsersService.service,
     {
         "loginUser": loginUser,
         "createUser" : createUser ,

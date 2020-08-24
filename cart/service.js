@@ -1,12 +1,9 @@
 //Service dependencies
-const express = require("express");
 const users = require("./stub/users");
 const catalogue = require("./stub/catalogue");
 const orders = require("./stub/orders");
-const morgan = require("morgan");
 const path = require("path");
 const bodyParser = require("body-parser");
-const app = express();
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 const cartsServer = new grpc.Server();
@@ -30,7 +27,7 @@ const db = mysql.createConnection({
 });
 //gRPC Mapping
 cartsServer.bind(`0.0.0.0:${SERVER_PORT}`, grpc.ServerCredentials.createInsecure());
-cartsServer.addService(protoDescriptor.CartService.service,
+cartsServer.addService(protoDescriptor.cartPackage.CartService.service,
     {
         "addItem": addItem,
         "deleteItem" : deleteItem ,
@@ -41,11 +38,6 @@ cartsServer.addService(protoDescriptor.CartService.service,
 cartsServer.start();
 console.log('Service started at port: ' + SERVER_PORT);
 
-app.use(morgan('combined'));
-app.use(morgan("dev", {}));
-app.use(bodyParser.json());
-
-//app.use(morgan("dev", {}));
 var carts = [];
 
 /*=====================Microservice Methods=====================*/

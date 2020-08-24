@@ -8,7 +8,7 @@ ENV TZ=Europe/Dublin
 # All scripts in docker-entrypoint-initdb.d/ are automatically
 # executed during container startup
 
-ADD mysqlDB/shopDB.sql /docker-entrypoint-initdb.d/shopDB.sql
+ADD database/shopDB.sql /docker-entrypoint-initdb.d/shopDB.sql
 
 EXPOSE 3306
 

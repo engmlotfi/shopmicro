@@ -1,9 +1,12 @@
 {
-  "name": "node-api",
-  "main": "app.js",
+  "name": "users",
+  "main": "service.js",
+  "version": "0.0.1",
+  "description": "users microservice.",
+  "license": "ISC",
   "dependencies": {
-    "mysql": "^2.18.1",
     "@grpc/proto-loader": "^0.5.4",
-    "grpc": "^1.24.2"
+    "grpc": "^1.24.2",
+    "mysql": "^2.18.1"
   }
 }
