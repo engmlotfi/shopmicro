@@ -8,7 +8,7 @@
         , qs = require('querystring')
         , path= require("path");
     const InventoryHost = process.env.InventoryHost || 'localhost:3002'
-    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'protos', 'inventory.proto');
+    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'catalogue.proto');
 
     //Load the protobuf
     var inventory_proto = grpc.loadPackageDefinition(
@@ -22,7 +22,7 @@
     );
 
     //Create gRPC client
-    var grpc_client = new inventory_proto.inventory.InventoryService(
+    var grpc_client = new inventory_proto.cataloguePackage.CatalogueService(
         InventoryHost,
     grpc.credentials.createInsecure()
     );

@@ -9,7 +9,7 @@
         , async     = require("async")
         , path= require("path");
     const CartHost = process.env.CartHost || 'localhost:3003'
-    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'protos', 'cart.proto');
+    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'cart.proto');
     //Load the protobuf
     var cart_proto = grpc.loadPackageDefinition(
         protoLoader.loadSync(PROTO_PATH, {
@@ -23,7 +23,7 @@
 
 
     //Create gRPC client
-    var grpc_client = new cart_proto.cart.CartService(
+    var grpc_client = new cart_proto.cartPackage.CartService(
         CartHost,
         grpc.credentials.createInsecure()
     );

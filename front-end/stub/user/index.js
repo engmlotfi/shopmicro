@@ -9,7 +9,7 @@
         , qs = require('querystring')
         , path= require("path");
     const UsersHost = process.env.UsersHost || 'localhost:3001'
-    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'protos', 'users.proto');
+    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'users.proto');
     //Load the protobuf
     var users_proto = grpc.loadPackageDefinition(
         protoLoader.loadSync(PROTO_PATH, {
@@ -22,7 +22,7 @@
     );
 
     //Create gRPC client
-    var grpc_client = new users_proto.users.UsersService(
+    var grpc_client = new users_proto.usersPackage.UsersService(
         UsersHost,
         grpc.credentials.createInsecure()
     );

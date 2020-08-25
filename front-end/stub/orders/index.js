@@ -8,7 +8,7 @@
       , qs = require('querystring')
       , path= require("path");
   const OrdersHost = process.env.OrdersHost || 'localhost:3004'
-  var PROTO_PATH = path.join(__dirname, '..', '..','..', 'protos', 'orders.proto');
+  var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'orders.proto');
   //Load the protobuf
   var orders_proto = grpc.loadPackageDefinition(
       protoLoader.loadSync(PROTO_PATH, {
@@ -21,7 +21,7 @@
   );
 
   //Create gRPC client
-  var grpc_client = new orders_proto.orders.OrdersService(
+  var grpc_client = new orders_proto.ordersPackage.OrdersService(
       OrdersHost,
       grpc.credentials.createInsecure()
   );
