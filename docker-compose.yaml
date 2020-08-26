@@ -1,24 +1,5 @@
 version: '3'
 services:
-  front-end:
-    build:
-      context: .
-      dockerfile: front-end/Dockerfile
-    container_name: front-end
-    environment:
-      - "UsersHost=users:3001"
-      - "CatalogueHost=catalogue:3002"
-      - "CartHost=cart:3003"
-      - "OrdersHost=orders:3004"
-      - "PORT=8080"
-    depends_on:
-      - users
-      - catalogue
-      - cart
-      - orders
-    ports:
-      - "80:8080"
-
   users:
     build:
       context: .
@@ -81,6 +62,25 @@ services:
       - database
     ports:
       - "3004:3004"
+
+  front-end:
+    build:
+      context: .
+      dockerfile: front-end/Dockerfile
+    container_name: front-end
+    environment:
+      - "UsersHost=users:3001"
+      - "CatalogueHost=catalogue:3002"
+      - "CartHost=cart:3003"
+      - "OrdersHost=orders:3004"
+      - "PORT=8080"
+    depends_on:
+      - users
+      - catalogue
+      - cart
+      - orders
+    ports:
+      - "80:8080"
 
   database:
     build:

@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.19.0 (f63a961c)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: users
+  name: users
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.19.0 (f63a961c)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: users
+    spec:
+      containers:
+      - env:
+        - name: DB_HOST
+          value: database
+        - name: PORT
+          value: "3001"
+        image: users
+        name: users
+        ports:
+        - containerPort: 3001
+        resources: {}
+      restartPolicy: Always
+status: {}

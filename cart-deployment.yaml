@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.19.0 (f63a961c)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: cart
+  name: cart
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.19.0 (f63a961c)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: cart
+    spec:
+      containers:
+      - env:
+        - name: CatalogueHost
+          value: catalogue:3002
+        - name: DB_HOST
+          value: database
+        - name: OrdersHost
+          value: orders:3004
+        - name: PORT
+          value: "3003"
+        - name: UsersHost
+          value: users:3001
+        image: cart
+        name: cart
+        ports:
+        - containerPort: 3003
+        resources: {}
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.19.0 (f63a961c)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: orders
+  name: orders
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.19.0 (f63a961c)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: orders
+    spec:
+      containers:
+      - env:
+        - name: CatalogueHost
+          value: catalogue:3002
+        - name: DB_HOST
+          value: database
+        - name: PORT
+          value: "3004"
+        - name: UsersHost
+          value: users:3001
+        image: orders
+        name: orders
+        ports:
+        - containerPort: 3004
+        resources: {}
+      restartPolicy: Always
+status: {}
