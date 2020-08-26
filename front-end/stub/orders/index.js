@@ -26,11 +26,11 @@
       grpc.credentials.createInsecure()
   );
 
-  // get all products
+  // get all orders
   app.get("/orders", function (req, res, next) {
-    var customerId = helpers.getUserId(req, app.get("env"));
+    var custId = helpers.getUserId(req, app.get("env"));
     var payload = {
-      customer_id: customerId,
+      custId: custId,
     }
 
     var body, statusCode;
@@ -40,7 +40,7 @@
         statusCode = 500;//Internal Error
       } else {
         body = JSON.stringify(orders.orders);
-        statusCode = 200;//Successfull
+        statusCode = 200;//Successful
       }
       res.writeHeader(statusCode);
       res.end(body);
@@ -48,10 +48,10 @@
 
   });
 
-  app.get("/orders/:customer_id", function (req, res, next) {
-    if (req.params.customer_id) {
+  app.get("/orders/:custId", function (req, res, next) {
+    if (req.params.custId) {
       var payload = {
-        customer_id: req.params.customer_id,
+        custId: req.params.custId,
       }
 
       var body, statusCode;
@@ -61,7 +61,7 @@
           statusCode = 500;//Internal Error
         } else {
           body = JSON.stringify(orders.orders);
-          statusCode = 200;//Successfull
+          statusCode = 200;//Successful
         }
         res.writeHeader(statusCode);
         res.end(body);
@@ -74,7 +74,7 @@
     }
 
   });
-  //get specific product by id
+  //get specific order by id
   app.get("/order/:id", function (req, res, next) {
     var body, statusCode;
     if (req.params.id) {
@@ -86,7 +86,7 @@
         }else{
           //console.log(products);
           body=JSON.stringify(orderDetails);
-          statusCode=200;//Successfull
+          statusCode=200;//Successful
         }
         res.writeHeader(statusCode);
         res.end(body);

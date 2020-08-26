@@ -7,11 +7,11 @@
         , protoLoader = require("@grpc/proto-loader")
         , qs = require('querystring')
         , path= require("path");
-    const InventoryHost = process.env.InventoryHost || 'localhost:3002'
+    const InventoryHost = process.env.CatalogueHost || 'localhost:3002'
     var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'catalogue.proto');
 
     //Load the protobuf
-    var inventory_proto = grpc.loadPackageDefinition(
+    var catalogue_proto = grpc.loadPackageDefinition(
         protoLoader.loadSync(PROTO_PATH, {
             keepCase: true,
             longs: String,
@@ -22,7 +22,7 @@
     );
 
     //Create gRPC client
-    var grpc_client = new inventory_proto.cataloguePackage.CatalogueService(
+    var grpc_client = new catalogue_proto.cataloguePackage.CatalogueService(
         InventoryHost,
     grpc.credentials.createInsecure()
     );
@@ -66,7 +66,7 @@
             var userId = helpers.getUserId(req, app.get("env"));
             var product=qs.parse(body);
             var payload = {
-                user_id:userId,
+                admin_id:userId,
                 name :product.name,
                 quantity :product.quantity,
                 price :product.price,
@@ -83,7 +83,7 @@
     });
     
     // get all products
-    app.get("/products", function (req, res, next) {
+    app.get("/getProducts", function (req, res, next) {
         var body, statusCode;
         grpc_client.getProducts({}, {}, (err, products) => {
             if (err) {
@@ -92,7 +92,7 @@
             } else {
                 //console.log(products);
                 body = JSON.stringify(products.products);
-                statusCode = 200;//Successfull
+                statusCode = 200;//Successful
             }
             res.writeHeader(statusCode);
             res.end(body);
@@ -112,7 +112,7 @@
                 }else{
                     //console.log(products);
                     body=JSON.stringify(product);
-                    statusCode=200;//Successfull
+                    statusCode=200;//Successful
                 }
                 res.writeHeader(statusCode);
                 res.end(body);
@@ -130,7 +130,7 @@
         var body, statusCode;
         var userId = helpers.getUserId(req, app.get("env"));
         if (req.params.id) {
-            const payload = { user_id: userId,
+            const payload = { admin_id: userId,
                 id: parseInt(req.params.id)};
             grpc_client.deleteProduct(payload, {}, (err, result) => {
                 if (err){
@@ -139,7 +139,7 @@
                 }else{
                     //console.log(products);
                     body=JSON.stringify(result);
-                    statusCode=200;//Successfull
+                    statusCode=200;//Successful
                 }
                 res.writeHeader(statusCode);
                 res.end(body);

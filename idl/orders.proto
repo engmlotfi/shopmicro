@@ -14,20 +14,20 @@ message result {
 }
 
 message Item {
-  uint32 product_id = 1;
+  uint32 productID = 1;
   uint32 quantity = 2;
 }
 
 message Cart {
-  string customer_id = 1;
+  string custId = 1;
   repeated Item items= 2;
 }
 
 message Customer {
-  string customer_id = 1;
+  string custId = 1;
 }
 message ItemDetails {
-  uint32 product_id = 1;
+  uint32 productID = 1;
   string name = 3;
   uint32 quantity = 2;
   float price = 4;

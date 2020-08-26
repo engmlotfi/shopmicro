@@ -29,7 +29,7 @@
 
     app.post("/login", function (req, res, next) {
         var payload=req.body;
-        grpc_client.loginUser(payload, {}, (err, user) => {
+        grpc_client.loginUser(payload, {}, (err, body) => {
             if (err){
                 req.session.userId = null;//customerId;
                 req.session.userName= null;
@@ -42,29 +42,32 @@
                 res.end("User Not found");
 
             }else{
-                console.log(user);
-                //var customerId = user.id;
-                //console.log(customerId);
-                req.session.userId = user.id;//customerId;
-                req.session.userName= user.name;
-                req.session.userRole = user.role;
-                //console.log("set cookie" + customerId);
+                console.log(body);
+                let userId = body.id;
+                let userName = body.name;
+                let userRole = body.role;
+                let maxAgeValue = 24 * 60 *  60;
+                console.log('user id ' +userId + ' username: ' + userName+ ' user role: '+ userRole);
+                req.session.userId = userId;
+                req.session.userName= userName;
+                req.session.userRole = userRole;
+                console.log("set cookie" + userId);//for Debugging
                 res.status(200);
                 res.cookie(cookie_name, req.session.id, {
-                    maxAge: 3600000
+                    maxAge: maxAgeValue
                 });
-                res.cookie('userId', req.session.userId, {
-                    maxAge: 3600000
+                res.cookie(userId, userId, {
+                    maxAge: maxAgeValue
                 });
-                res.cookie('userName', req.session.userName, {
-                    maxAge: 3600000
+                res.cookie(userName, userName, {
+                    maxAge: maxAgeValue
                 });
-                res.cookie('userRole', req.session.userRole, {
-                    maxAge: 3600000
+                res.cookie(userRole, userRole, {
+                    maxAge: maxAgeValue
                 });
-                //console.log("Sent cookies.");
-                res.end(JSON.stringify({role:user.id,
-                    name:user.name}));
+                console.log("Sent cookies.");
+                res.end(JSON.stringify({role:userRole,
+                    name:userName}));
             }
         });
     });
@@ -101,11 +104,33 @@
 
     app.post("/register", function (req, res, next) {
         var userId = helpers.getUserId(req, app.get("env"));
+        if(userId!="") {
+            return res.status(400).send("User logged in; logout to register");
+        }
+        var payload={admin_id:userId,
+            managedUser:req.body,
+            type: "Register"};
+        grpc_client.addUser(payload, {}, (err, status) => {
+            if (err){
+                res.status(500);
+                res.end(err.details);
+
+            }else{
+                console.log(status);
+                res.status(200);
+                res.end("new user registerd");
+            }
+        });
+    });
+
+    app.post("/createUser", function (req, res, next) {
+        var userId = helpers.getUserId(req, app.get("env"));
         if(userId=="") {
             return res.status(400).send("no administrator logged in");
         }
-        var payload={requester_id:userId,
-            managedUser:req.body};
+        var payload={admin_id:userId,
+            managedUser:req.body,
+            type: ""};
         grpc_client.addUser(payload, {}, (err, status) => {
             if (err){
                 res.status(500);

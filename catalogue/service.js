@@ -15,8 +15,8 @@ const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH,  {keepCase: true
 const protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 const mysql = require('mysql');
 const DB_HOST = process.env.DB_HOST || 'localhost';
-const SERVER_PORT = process.env.PORT || 3003;
-//TODO : Move cart to DB
+const SERVER_PORT = process.env.PORT || 3002;
+
 const db = mysql.createConnection({
     host:     DB_HOST,
     user:     'root',
@@ -101,7 +101,7 @@ function createProduct(call, callback) {
 }
 
 function deleteProduct(call, callback){
-//TODO : delte product
+//TODO : delete product
     console.log("delete product");
 }
 

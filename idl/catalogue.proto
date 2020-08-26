@@ -46,7 +46,7 @@ message NewProduct {
   string image = 6;
 }
 message DeleteProduct {
-  string user_id=1;
+  string admin_id=1;
   uint32 id = 2;
 }*/
 

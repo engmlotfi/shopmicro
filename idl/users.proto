@@ -46,8 +46,8 @@ message Users{
 }
 message User {
   string userID = 1;
-  string password = 2;
-  string name = 3;
+  string name = 2;
+  string password = 3;
   string address = 4;
   string role = 5;
 }

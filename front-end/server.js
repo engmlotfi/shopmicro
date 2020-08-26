@@ -9,10 +9,10 @@ var request      = require("request")
   , epimetheus   = require("epimetheus")
   , config       = require("./config")
   , helpers      = require("./helpers")
-  , cart         = require("./api/cart/index.txt")
-  , catalogue    = require("./api/catalogue/index.txt")
-  , orders       = require("./api/orders/index.txt")
-  , user         = require("./api/user/index.txt")
+  , cart         = require("./stub/cart/index.js")
+  , catalogue    = require("./stub/catalogue/index.js")
+  , orders       = require("./stub/orders/index.js")
+  , user         = require("./stub/user/index.js")
   , app          = express()
 
 //app.use(express.logger());
@@ -39,13 +39,13 @@ process.argv.forEach(function (val, index, array) {
   }
 });
 
-/* Mount API endpoints */
+/* Mount gRpc Stub */
 app.use(cart);
 app.use(catalogue);
 app.use(orders);
 app.use(user);
 
-var server = app.listen(process.env.PORT || 8079, function () {
+var server = app.listen(process.env.PORT || 8080 , function () {
   var port = server.address().port;
   console.log("App now running in %s mode on port %d", app.get("env"), port);
 });

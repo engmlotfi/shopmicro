@@ -15,7 +15,7 @@ message CustomerID {
 
 message ItemID {
   string custId = 1;
-  uint32 itemId = 2;
+  uint32 productID = 2;
 }
 
 message NewItem {

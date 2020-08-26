@@ -26,7 +26,7 @@
     helpers.simpleHttpRequest(endpoints.tagsUrl, res, next);
   });
 
-  app.post("/newProduct", function (req, res) {
+  app.post("/Product", function (req, res) {
     var x = endpoints.newProductUrl ;//+ req.url.toString();
     console.log("newProduct "+x);
     var options = {

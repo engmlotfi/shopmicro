@@ -85,8 +85,8 @@
   }
 
   /* TODO: Add documentation */
-  helpers.getCustomerId = function(req, env) {
-    // Check if logged in. Get customer Id
+  helpers.getUserId = function(req, env) {
+    // Check if logged in. Get User Id
     var logged_in = req.cookies.logged_in;
 
     // TODO REMOVE THIS, SECURITY RISK
@@ -102,7 +102,7 @@
       return req.session.id;
     }
 
-    return req.session.customerId;
+    return req.session.userId;
   }
   module.exports = helpers;
 }());

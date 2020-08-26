@@ -31,9 +31,10 @@
     // add to cart
     app.post("/cart", function (req, res) {
         var userId = helpers.getUserId(req, app.get("env"));
+        console.log("User ID "+userId );
         var payload = {
-            customer_id: userId,
-            product_id: req.body.id,
+            custId: userId,
+            productID: req.body.id,
             quantity: req.body.qty
         }
         grpc_client.addItem(payload, {}, (err, result) => {
@@ -49,7 +50,7 @@
     app.post("/checkout", function (req, res) {
         var userId = helpers.getUserId(req, app.get("env"));
         var payload = {
-            customer_id: userId,
+            custId: userId,
         }
         grpc_client.checkOut(payload, {}, (err, result) => {
             if (err == null) {
@@ -67,7 +68,7 @@
             return res.status(400).send("no user logged in");
         }
         var payload={
-            customer_id : userId
+            custId : userId
         }
         grpc_client.getItems(payload, {}, (err, items) => {
             if (err) {
@@ -86,8 +87,8 @@
         var userId = helpers.getUserId(req, app.get("env"));
         var body, statusCode;
         var payload={
-            customer_id: userId,
-            product_id: parseInt(req.params.id)
+            custId: userId,
+            productID: parseInt(req.params.id)
         }
         if (req.params.id) {
             grpc_client.deleteItem(payload, {}, (err, result) => {
