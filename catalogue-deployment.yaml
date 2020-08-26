@@ -28,7 +28,7 @@ spec:
           value: "3002"
         - name: UsersHost
           value: users:3001
-        image: catalogue
+        image: eu.gcr.io/tidy-way-264120/catalogue
         name: catalogue
         ports:
         - containerPort: 3002

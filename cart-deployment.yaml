@@ -32,7 +32,7 @@ spec:
           value: "3003"
         - name: UsersHost
           value: users:3001
-        image: cart
+        image: eu.gcr.io/tidy-way-264120/cart
         name: cart
         ports:
         - containerPort: 3003

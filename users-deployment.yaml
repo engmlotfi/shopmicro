@@ -26,7 +26,7 @@ spec:
           value: database
         - name: PORT
           value: "3001"
-        image: users
+        image: eu.gcr.io/tidy-way-264120/users
         name: users
         ports:
         - containerPort: 3001

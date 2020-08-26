@@ -30,7 +30,7 @@ spec:
           value: "3004"
         - name: UsersHost
           value: users:3001
-        image: orders
+        image: eu.gcr.io/tidy-way-264120/orders
         name: orders
         ports:
         - containerPort: 3004

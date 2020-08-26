@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: database
   name: database
 spec:
+  type: LoadBalancer
   ports:
   - name: "3306"
     port: 3306

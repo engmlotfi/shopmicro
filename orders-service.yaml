@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: orders
   name: orders
 spec:
+  type: LoadBalancer
   ports:
   - name: "3004"
     port: 3004

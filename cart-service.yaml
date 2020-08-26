@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: cart
   name: cart
 spec:
+  type: LoadBalancer
   ports:
   - name: "3003"
     port: 3003
