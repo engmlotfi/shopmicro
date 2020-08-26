@@ -25,8 +25,8 @@ spec:
       - env:
         - name: PORT
           value: "3306"
-        image: database
-        name: eu.gcr.io/tidy-way-264120/database
+        image: eu.gcr.io/tidy-way-264120/database
+        name: database
         ports:
         - containerPort: 3306
         resources: {}
