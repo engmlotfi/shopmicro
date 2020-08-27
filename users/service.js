@@ -63,7 +63,7 @@ function loginUser(call, callback) {
 
 function getRole(call, callback) {
 
-    let query = "SELECT role FROM users where userID='" + call.request.id + "'";
+    let query = "SELECT role FROM users where userID='" + call.request.userID + "'";
     db.query(
         query,
         [],
@@ -84,7 +84,7 @@ function getRole(call, callback) {
 }
 
 function createUser(call, callback){
-    let payload = {request:{id: call.request.admin_id}};
+    let payload = {request:{userID: call.request.admin_id}};
     getRole(payload,(err,role)=> {
         if (err) {
             callback(err, null);
@@ -125,7 +125,7 @@ function createUser(call, callback){
 }
 
 function getUser(call, callback){
-    let payload = {request:{id: call.request.admin_id}};
+    let payload = {request:{userID: call.request.admin_id}};
     getRole(payload,(err,role)=> {
         if (err) {
             callback(err, null);
@@ -152,7 +152,7 @@ function getUser(call, callback){
 }
 
 function getUsers(call, callback){
-    let payload = {request:{id: call.request.admin_id}};
+    let payload = {request:{userID: call.request.admin_id}};
     getRole(payload,(err,role)=> {
         if (err) {
             callback(err, null);
@@ -181,7 +181,7 @@ function getUsers(call, callback){
 }
 
 function updateUser(call, callback){
-    let payload = {request:{id: call.request.admin_id}};
+    let payload = {request:{userID: call.request.admin_id}};
     getRole(payload,(err,role)=> {
         if (err) {
             callback(err, null);
@@ -214,7 +214,7 @@ function updateUser(call, callback){
 }
 
 function deleteUser(call, callback){
-    let payload = {request:{id: call.request.admin_id}};
+    let payload = {request:{userID: call.request.admin_id}};
     getRole(payload,(err,role)=> {
         if (err) {
             callback(err, null);

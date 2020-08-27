@@ -54,13 +54,13 @@ function addOrder(call, callback)
  //check price/quantities/ payment method
         var total_price=0;
         async.each(cart, function(item,callback){
-            inventory.getProduct(item.product_id,(product,err)=>{
+            inventory.getProduct(item.productID,(product,err)=>{
                 if(err){
                     console.log(err)
                 }else{
                     console.log(product)
                 }
-                total_price +=item.quantity * product.price;
+                total_price +=item.quantity * parseFloat(product.price).toFixed(2);
                 callback();
             })
         }, function (err){
@@ -73,12 +73,12 @@ function addOrder(call, callback)
                     async.each(cart, function(item,next){
                         var query = "INSERT INTO OrderDetails (" +
                             "order_id, " +
-                            "product_id, " +
+                            "productID, " +
                             "quantity)" +
                             "VALUES(?, ?, ?)";
                         db.query(
                             query,
-                            [ordernum, item.product_id, item.quantity],
+                            [ordernum, item.productID, item.quantity],
                             function (err, result) {
                                 if (err) {
                                     next({message: 'Error inserting products into database'});
@@ -128,8 +128,8 @@ function createOrder(data, callback){
 
 
 function getOrders(call,callback){
-    var customer_id=call.request.customer_id;
-    var query = "SELECT * FROM Orders where customer_id='"+ customer_id +"'";
+    var custId=call.request.custId;
+    var query = "SELECT * FROM Orders where customer_id='"+ custId +"'";
     db.query(
         query,
         [],
@@ -161,7 +161,7 @@ function getOrder(call,callback){
             if (rows.length>0){
                 var order_details=[];
                 async.each(rows, function(item,callback){
-                    var order_item= {product_id:item.product_id,
+                    var order_item= {productID:item.productID,
                         quantity:item.quantity};
                     inventory.getProduct(item.product_id,(product,err)=>{
                         if(err){

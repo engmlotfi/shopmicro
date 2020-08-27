@@ -21,7 +21,7 @@
     /*=====================RPC Calls=====================*/
     app.getRole=function (id,callback)
         {
-            var payload = {id: id};
+            var payload = {userID: id};
             grpc_client.getRole(payload, {}, (err, role) => {
                 if (err) {
                     //console.log("Error with log in: " + err.details);

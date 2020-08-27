@@ -54,7 +54,7 @@ function createProduct(call, callback) {
             callback("You does not have administrator access", null);
             return;
         }
-    console.log("This is a new product from microservice")
+    console.log("This is a new product from microservice");
     let query = "SELECT * FROM Products where name='"+newProduct.name+"'";
     db.query(
          query, [],
@@ -84,7 +84,7 @@ function createProduct(call, callback) {
                                     name : newProduct.name ,
                                     quantity: newProduct.quantity ,
                                     price: newProduct.price,
-                                    image: newProduct.image}
+                                    image: newProduct.image};
                                 callback(null, product);
                             }
 
@@ -117,7 +117,7 @@ function getProducts(call, callback){
                 throw err;
             }
             callback(null, {products: rows});
-            console.log("Products sent");
+            //console.log("Products sent " + JSON.stringify(rows));
         }
     );
 }
@@ -125,7 +125,8 @@ function getProducts(call, callback){
 
 function getProduct(call, callback){
     console.log("getProduct");
-    let query = "SELECT * FROM products where productID="+call.request.product.id;
+    let id=call.request.id;
+    let query = "SELECT * FROM products where productID='"+id+"'";
     db.query(
         query,
         [],

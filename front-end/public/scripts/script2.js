@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('#logonForm').on( "submit",function(event) {
-
         event.preventDefault();
+        hideAll();
         $("#login").hide();
 
         let o={};
@@ -42,8 +42,9 @@ $(document).ready(function () {
 
     });
     $('#registerForm').on( "submit",function(event) {
-
+        hideAll();
         event.preventDefault();
+        hideAll();
         $("#register").hide();
         var o={};
         var a = $('#registerForm').serializeArray();
@@ -75,6 +76,7 @@ $(document).ready(function () {
     $('#newProductForm').on( "submit",function(event) {
 
         event.preventDefault();
+        hideAll();
         $("#newProduct").hide();
         var fd = $('#newProductForm').serialize();
         alert("This is event!");

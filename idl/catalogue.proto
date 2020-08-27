@@ -17,7 +17,7 @@ message ProductID {
 }
 
 message Product {
-  uint32 id = 1;
+  uint32 productID = 1;
   string name = 2;
   uint32 quantity = 3;
   float price = 4;

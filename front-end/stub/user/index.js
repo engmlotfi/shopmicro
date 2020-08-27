@@ -7,7 +7,8 @@
         , protoLoader = require("@grpc/proto-loader")
         , cookie_name = "logged_in"
         , qs = require('querystring')
-        , path= require("path");
+        , path= require("path")
+        , cookieParser = require('cookie-parser');
     const UsersHost = process.env.UsersHost || 'localhost:3001'
     var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'users.proto');
     //Load the protobuf
@@ -20,7 +21,7 @@
             oneofs: true
         })
     );
-
+    app.use(cookieParser());
     //Create gRPC client
     var grpc_client = new users_proto.usersPackage.UsersService(
         UsersHost,
@@ -43,7 +44,7 @@
 
             }else{
                 console.log(body);
-                let userId = body.id;
+                let userId = body.userID;
                 let userName = body.name;
                 let userRole = body.role;
                 let maxAgeValue = 24 * 60 *  60;
@@ -51,21 +52,21 @@
                 req.session.userId = userId;
                 req.session.userName= userName;
                 req.session.userRole = userRole;
-                console.log("set cookie" + userId);//for Debugging
+                console.log("set cookie " + userId);//for Debugging
                 res.status(200);
                 res.cookie(cookie_name, req.session.id, {
                     maxAge: maxAgeValue
                 });
-                res.cookie(userId, userId, {
+                res.cookie("userId", userId, {
                     maxAge: maxAgeValue
                 });
-                res.cookie(userName, userName, {
+                res.cookie("userName", userName, {
                     maxAge: maxAgeValue
                 });
-                res.cookie(userRole, userRole, {
+                res.cookie("userRole", userRole, {
                     maxAge: maxAgeValue
                 });
-                console.log("Sent cookies.");
+                console.log("Sent cookies."+ JSON.stringify(res.cookie));
                 res.end(JSON.stringify({role:userRole,
                     name:userName}));
             }
@@ -104,12 +105,25 @@
 
     app.post("/register", function (req, res, next) {
         var userId = helpers.getUserId(req, app.get("env"));
+        let registrationType = "Register";
         if(userId!="") {
-            return res.status(400).send("User logged in; logout to register");
+            let payload = {userID: userId};
+            grpc_client.getRole(payload, {}, (err, role) => {
+                if (err) {
+                    //console.log("Error with log in: " + err.details);
+                    callback(null,err.details)
+                } else {
+                        if (role != "admin"){
+                            return res.status(400).send("User logged in; logout to register");
+                        }else{
+                            registrationType = "Add User";
+                        }
+                }
+            });
         }
-        var payload={admin_id:userId,
+        let payload={admin_id:userId,
             managedUser:req.body,
-            type: "Register"};
+            type: registrationType};
         grpc_client.addUser(payload, {}, (err, status) => {
             if (err){
                 res.status(500);
@@ -131,7 +145,7 @@
         var payload={admin_id:userId,
             managedUser:req.body,
             type: ""};
-        grpc_client.addUser(payload, {}, (err, status) => {
+        grpc_client.createUser(payload, {}, (err, status) => {
             if (err){
                 res.status(500);
                 res.end(err.details);

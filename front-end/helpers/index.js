@@ -89,10 +89,10 @@
     // Check if logged in. Get User Id
     var logged_in = req.cookies.logged_in;
 
-    // TODO REMOVE THIS, SECURITY RISK
+/*    // TODO REMOVE THIS, SECURITY RISK
     if (env == "development" && req.query.custId != null) {
       return req.query.custId;
-    }
+    }*/
 
     if (!logged_in) {
       if (!req.session.id) {

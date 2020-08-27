@@ -5,6 +5,7 @@ const orders = require("./stub/orders");
 const path = require("path");
 const bodyParser = require("body-parser");
 const grpc = require("grpc");
+const async = require("async");
 const protoLoader = require("@grpc/proto-loader");
 const cartsServer = new grpc.Server();
 const PROTO_FILE_PATH = path.join(__dirname, "..", "idl", "cart.proto");
@@ -35,10 +36,11 @@ cartsServer.addService(protoDescriptor.cartPackage.CartService.service,
         "checkOut": checkOut
     });
 //start the grpc server
+var carts = [];
 cartsServer.start();
 console.log('Service started at port: ' + SERVER_PORT);
 
-var carts = [];
+
 
 /*=====================Microservice Methods=====================*/
 
@@ -56,25 +58,21 @@ function addItem(call, callback) {
     if (carts["" + obj.custId] === undefined){
         carts["" + obj.custId] = [];
     }
-    let c = carts["" + obj.custId]; //Create a cart
+    var c = carts["" + obj.custId]; //Create a cart
 
-    const found = c.some(item => item.name === obj.name);
+    const found = c.some(item => item.productID === obj.productID);
     if(found){
-        let index = c.findIndex(item => item.name === obj.name);
-        c[index].price = obj.price;
+        var index = c.findIndex(item => item.productID === obj.productID);
         c[index].quantity = parseInt(c[index].quantity) + parseInt(obj.quantity);
     }
     else {
         for (ind = 0; ind < c.length; ind++)
             if (max < c[ind].cartId)
                 max = c[ind].cartId;
-        let cartId = max + 1;
-        let data = {
+        var cartId = max + 1;
+        var data = {
             "cartId": cartId,
             "productID": obj.productID,
-            "name": obj.name,
-            "price": obj.price,
-            "image": obj.image,
             "quantity": obj.quantity
         };
         console.log(JSON.stringify(data));
@@ -94,8 +92,8 @@ function deleteItem(call, callback){
 }
 
 function getItems(call, callback){
-    var custId = call.request.custId;
-    var customerCart = cart[custId];
+    let custId = call.request.custId;
+    let customerCart = carts[custId];
     var cartObj = [];
     console.log("getCart" + custId);
     console.log('custID ' + custId);
@@ -104,11 +102,13 @@ function getItems(call, callback){
             quantity:item.quantity};
         catalogue.getProduct(item.productID,(product,err)=>{
             if(err){
-            //TODO: handle product does not exist
+            console.log("Product not found " + JSON.stringify(err));
+            throw err;
             }else{
+                console.log("Product found");
                 newItem.name=product.name;
-                newItem.price = product.price,
-                    newItem.image=product.image;
+                newItem.price = product.price;
+                newItem.image=product.image;
             }
             cartObj.push(newItem);
             callback();
@@ -123,7 +123,7 @@ function getItems(call, callback){
 
 
 function checkOut(call,callback){
-    var custId=call.request.custId;
+    let custId=call.request.custId;
     users.getRole(custId,(role,err)=> {
         if (err) {
             callback(err, null);
@@ -146,7 +146,7 @@ function checkOut(call,callback){
                 delete cart[custId];
                 callback(null,status);
             } else {
-                callback("Oder creation failed",status);
+                callback("Order creation failed",status);
             }
         })
     });

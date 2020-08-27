@@ -117,7 +117,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'joe','joe','cork','customer'),(2,'mary','mary','dublin','customer'),(3,'joey','joey','london','customer'),(4,'fred','fred','dublin','customer'),(5,'mohamed','mohamed','cork','customer'),(6,'lotfi','lotfi','douglas,cork','customer');
+INSERT INTO `users` VALUES (1,'admin','admin','cork','admin'),(2,'joe','joe','dublin','customer'),(3,'joey','joey','london','customer'),(4,'fred','fred','dublin','customer'),(5,'mohamed','mohamed','cork','customer'),(6,'lotfi','lotfi','douglas,cork','admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

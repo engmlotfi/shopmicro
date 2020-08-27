@@ -1,17 +1,17 @@
 (function (){
     'use strict';
-    var express   = require("express")
+    const express   = require("express")
         , helpers   = require("../../helpers")
         , app       = express()
         , grpc = require("grpc")
         , protoLoader = require("@grpc/proto-loader")
-        , qs = require('querystring')
+        , qs = require("querystring")
         , async     = require("async")
         , path= require("path");
     const CartHost = process.env.CartHost || 'localhost:3003'
-    var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'cart.proto');
+    const PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'cart.proto');
     //Load the protobuf
-    var cart_proto = grpc.loadPackageDefinition(
+    const cart_proto = grpc.loadPackageDefinition(
         protoLoader.loadSync(PROTO_PATH, {
             keepCase: true,
             longs: String,
@@ -23,20 +23,20 @@
 
 
     //Create gRPC client
-    var grpc_client = new cart_proto.cartPackage.CartService(
+    const grpc_client = new cart_proto.cartPackage.CartService(
         CartHost,
         grpc.credentials.createInsecure()
     );
 
     // add to cart
     app.post("/cart", function (req, res) {
-        var userId = helpers.getUserId(req, app.get("env"));
+        let userId = helpers.getUserId(req, app.get("env"));
         console.log("User ID "+userId );
-        var payload = {
+        let payload = {
             custId: userId,
             productID: req.body.id,
             quantity: req.body.qty
-        }
+        };
         grpc_client.addItem(payload, {}, (err, result) => {
             if (err == null) {
                 res.status(201).send(result)
@@ -48,8 +48,8 @@
 
     // add to cart
     app.post("/checkout", function (req, res) {
-        var userId = helpers.getUserId(req, app.get("env"));
-        var payload = {
+        let userId = helpers.getUserId(req, app.get("env"));
+        let payload = {
             custId: userId,
         }
         grpc_client.checkOut(payload, {}, (err, result) => {
@@ -63,11 +63,11 @@
 
     // get all cart items
     app.get("/cart", function (req, res, next) {
-        var userId = helpers.getUserId(req, app.get("env"));
+        let userId = helpers.getUserId(req, app.get("env"));
         if(userId=="") {
             return res.status(400).send("no user logged in");
         }
-        var payload={
+        let payload={
             custId : userId
         }
         grpc_client.getItems(payload, {}, (err, items) => {
@@ -84,9 +84,9 @@
 
     // Delete specific product
     app.delete("/cart/:id", function (req, res, next) {
-        var userId = helpers.getUserId(req, app.get("env"));
-        var body, statusCode;
-        var payload={
+        let userId = helpers.getUserId(req, app.get("env"));
+        let body, statusCode;
+        let payload={
             custId: userId,
             productID: parseInt(req.params.id)
         }
@@ -98,7 +98,7 @@
                 }else{
                     //console.log(products);
                     body=JSON.stringify(result);
-                    statusCode=200;//Successfull
+                    statusCode=200;//Successful
                 }
                 res.writeHeader(statusCode);
                 res.end(body);
@@ -111,7 +111,7 @@
         }
     });
 
-    // make the service available for front end
+
     module.exports = app;
 }());
 

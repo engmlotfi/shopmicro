@@ -5,9 +5,9 @@
         , app       = express()
         , grpc = require("grpc")
         , protoLoader = require("@grpc/proto-loader")
-        , qs = require('querystring')
+        , qs = require("querystring")
         , path= require("path");
-    const InventoryHost = process.env.CatalogueHost || 'localhost:3002'
+    const CatalogueHost = process.env.CatalogueHost || 'localhost:3002'
     var PROTO_PATH = path.join(__dirname, '..', '..','..', 'idl', 'catalogue.proto');
 
     //Load the protobuf
@@ -23,7 +23,7 @@
 
     //Create gRPC client
     var grpc_client = new catalogue_proto.cataloguePackage.CatalogueService(
-        InventoryHost,
+        CatalogueHost,
     grpc.credentials.createInsecure()
     );
 
@@ -84,7 +84,7 @@
     
     // get all products
     app.get("/getProducts", function (req, res, next) {
-        var body, statusCode;
+        let body, statusCode;
         grpc_client.getProducts({}, {}, (err, products) => {
             if (err) {
                 body = JSON.stringify(err.details);
@@ -92,6 +92,7 @@
             } else {
                 //console.log(products);
                 body = JSON.stringify(products.products);
+                console.log(JSON.stringify(body));
                 statusCode = 200;//Successful
             }
             res.writeHeader(statusCode);

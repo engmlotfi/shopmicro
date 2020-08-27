@@ -22,17 +22,21 @@ function getProducts() {
     hideAll();
     $("#products").show();
     $("#cart").hide();
+    $("#orders").hide();
     $.ajax({
         dataType: "json",
         url: "/getProducts",
         success: function (data) {
+            //alert("Products retrieved: " + JSON.stringify(data)) ;
             displayProducts(data, "products");
+            //accessRefresher();
         },
         error: function (jqXHR, exception) {
-            var msg = 'Error [' + jqXHR.status + '] :' + jqXHR.statusText +
+            let msg = 'Error [' + jqXHR.status + '] :' + jqXHR.statusText +
                 '\n' + jqXHR.responseJSON;
             alert(msg)
         }
+
     });
 }
 
@@ -80,8 +84,9 @@ function showNewProduct() {
 }
 
 function addToCart(prodid, fieldname) {
-    var num = document.getElementById(fieldname).value;
-    var dat = {
+    let num = document.getElementById(fieldname).value;
+    num=parseInt(num);
+    let dat = {
         id: prodid,
         qty : num
     };
@@ -102,14 +107,17 @@ function addToCart(prodid, fieldname) {
 
 }
 function checkout() {
-
-
     $.post(
         "/checkout",
         {
         },
         function (data) {
             $('#cartmessage').html(data);
+            if(data.status=="success")
+                alert("Thanks for buying our products");
+            else
+                alert("Error:\n" + data);
+            getCart();
         }
     );
 
@@ -133,6 +141,7 @@ function deleteCartItem(count) {
 function getCookie(cookieParam) {
     let name = cookieParam + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
+    console.log(decodedCookie);
     let cookieArray = decodedCookie.split(';');
     for(let i = 0; i <cookieArray.length; i++) {
         let cookie = cookieArray[i];
@@ -140,7 +149,7 @@ function getCookie(cookieParam) {
             cookie = cookie.substring(1);
         }
         if (cookie.indexOf(name) == 0) {
-            return cookie.substring(name.length, c.length);
+            return cookie.substring(name.length, cookie.length);
         }
     }
     return "";
@@ -149,8 +158,9 @@ function getCookie(cookieParam) {
 function accessRefresher() {
     let role = getCookie('userRole');
     let name = getCookie('userName');
+    console.log("User Name = "+ name + " User Role = "+ role)
     $('.customerClass').hide();
-    $('.admin').hide();
+    $('.adminClass').hide();
     if (role) {
         $("#logonmessage").text('Logged in as ' + role + ' (' + name + ')');
         $('#loginButton').text('Logout');
@@ -161,8 +171,10 @@ function accessRefresher() {
     } else {
         $("#logonmessage").text(role );
         $("#logonmessage").text(name);
-/*        $("#logonmessage").text('Logged out');
-        $('#loginButton').text('Login');*/
+        $("#logonmessage").text('Logged out');
+        $('.customerClass').hide();
+        $('.adminClass').hide();
+        $('#loginButton').text('Login');
     }
 }
 
@@ -185,14 +197,14 @@ function accessRefresher() {
         for (i = 0; i < products.length; i++) {
             out += "<tr>";
             out += '<td>' + products[i].name + '</td>';
-            out += '<td>' + products[i].price + '</td>';
+            out += '<td>' + parseFloat(products[i].price).toFixed(2) + '</td>';
             out += '<td> <img src="';
-            out += "images/" + products[i].image + '" style="width:104px;height:100px;">';
-            out += '<td>' + 'quantity <input type="text" value="1" name="';
+            out += "images/" + products[i].image + '" style="width:78px;height:75px;">';
+            out += '<td>' + '<span class="customerClass">quantity</span> <input class="customerClass" type="text" value="1" name="';
             out += 'quantity' + i + '" id="quant' + i
             out += '">' + '</td>';
 
-            out += '<td> <button onclick="addToCart(' + products[i].productID;
+            out += '<td> <button onclick="addToCart(' + products[i].productID + ' ';
             out += ",'quant" + i + "')" + '">Buy</button></td>';
             out += "</tr>";
         }
@@ -212,16 +224,16 @@ function accessRefresher() {
         for (i = 0; i < cart.length; i++) {
             out += "<tr>";
             out += '<td>' + cart[i].name + '</td>';
-            out += '<td>' + cart[i].price + '</td>';
+            out += '<td>' + parseFloat(cart[i].price).toFixed(2) + '</td>';
             out += '<td> <img src="';
-            out += "images/" + cart[i].image + '" style="width:104px;height:100px;">';
+            out += "images/" + cart[i].image + '" style="width:78px;height:75px;">';
             out += '<td> <button onclick="deleteCartItem(' + cart[i].cartid;
             out1 = ")" + '">Delete</button></td>';
             out += out1;
             out += '<td>' + cart[i].quantity + '</td>';
-            out += '<td>' + cart[i].price * cart[i].quantity + '</td>';
+            out += '<td>' + parseFloat(cart[i].price).toFixed(2) * cart[i].quantity + '</td>';
             out += "</tr>";
-            total += cart[i].price * cart[i].quantity;
+            total += parseFloat(cart[i].price).toFixed(2) * cart[i].quantity;
         }
         out += "</table>";
         out += "<br>";
@@ -231,6 +243,100 @@ function accessRefresher() {
         document.getElementById(name).innerHTML = out;
     }
 
+function getOrders(customer_id){
+    hideAll();
+    let url;
+    if(customer_id){
+        url="/orders/" + customer_id
+    }else{
+        url="/orders"
+    }
+    $.ajax({
+        dataType: "json",
+        url: url,
+        success: function (data) {
+            displayOrders(data, customer_id,"orders");
+            $("#cart").hide();
+            $("#products").hide();
+            $("#orders").show();
+        },
+        error: function (jqXHR, exception) {
+            var msg = 'Error ['+ jqXHR.status + '] :' + jqXHR.statusText+
+                '\n' + jqXHR.responseJSON;
+            alert(msg);
+            $("#orders").hide();
+        }
+    });
+}
 
+function getOrderDetails(orderId) {
 
-//displayProducts(productsData,"products");
+    $.ajax({
+        dataType: "json",
+        url: "/order/" +  orderId,
+        success: function (data) {
+            displayOrderDetails(data.items, orderId);
+        }
+    });
+}
+function displayOrders(orders,customer_id, name) {
+    var out;
+    var i;
+    if(customer_id){
+        out = "<h1> "+ customer_id + " Orders</h1><table>";
+    }else{
+        out = "<h1> My Orders</h1><table>";
+    }
+
+    out += '<tr>';
+    for (i = 0; i < Orderheaders.length; i++) {
+        out += '<th >' + Orderheaders[i] + '</th>';
+    }
+    out += "</tr>";
+    for (i = 0; i < orders.length; i++) {
+        out += "<tr>";
+        out += '<td>' + orders[i].id + '</td>';
+        out += '<td>' + formatDate(orders[i].saledate) + '</td>';
+        out += '<td>' + orders[i].total_price + '</td>';
+        out += '<td>' + orders[i].status + '</td>';
+        out += '<td> <button onclick="getOrderDetails(' + orders[i].id + ')">Display Details</button></td>';
+        out += "</tr>";
+        out += "<tr> <td colspan='5' id='orderDetails" +orders[i].id+ "'> </td>";
+    }
+
+    out += "</table>";
+    out += "<br>";
+    $("#"+ name).html(out);
+    currentDisplayedOrders=orders;
+    for (i = 0; i < orders.length; i++) {
+        $("#orderDetails" +orders[i].id).hide();
+    }
+}
+
+function displayOrderDetails(orderItems, orderId) {
+    var i=0;
+    for (i = 0; i < currentDisplayedOrders.length; i++) {
+        $("#orderDetails" +currentDisplayedOrders[i].id).hide();
+    }
+    var out = "<table>";
+    out += '<tr>';
+    for (i = 0; i < orderDetailheaders.length; i++) {
+        out += '<th >' + orderDetailheaders[i] + '</th>';
+    }
+    out += "</tr>";
+
+    for (i = 0; i < orderItems.length; i++) {
+        out += "<tr>";
+        out += '<td>' + orderItems[i].name + '</td>';
+        out += '<td>' + orderItems[i].price + '</td>';
+        out += '<td> <img src="images/' + orderItems[i].image + '"></td>';
+        out += '<td>' + orderItems[i].quantity + '</td>';
+        out += '<td>' + orderItems[i].price* orderItems[i].quantity + '</td>';
+        out += "</tr>";
+    }
+    out += "</table>";
+    out += "<br>";
+    $("#orderDetails" + orderId).html(out);
+    $("#orderDetails" + orderId).show()
+}
+

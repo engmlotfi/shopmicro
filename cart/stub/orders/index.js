@@ -4,7 +4,7 @@
     const protoLoader = require("@grpc/proto-loader");
     const path = require("path");
     const app={};
-    const OrdersHost = process.env.UsersHost || 'localhost:3004'
+    const OrdersHost = process.env.OrdersHost || 'localhost:3004'
     const PROTO_FILE_PATH = path.join(__dirname, '..', '..','..', 'idl', 'orders.proto')
     const packageDefinition = protoLoader.loadSync(PROTO_FILE_PATH, {keepCase: true,
         longs: String,
