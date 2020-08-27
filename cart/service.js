@@ -140,10 +140,10 @@ function checkOut(call,callback){
         }*/
 
         var payload={custId: custId,
-            items: cart[custId]};
+            items: carts[custId]};
         orders.addOrder(payload,function (status,err){
             if(status.status=="success"){
-                delete cart[custId];
+                delete carts[custId];
                 callback(null,status);
             } else {
                 callback("Order creation failed",status);
