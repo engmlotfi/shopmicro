@@ -5,7 +5,7 @@
   "description": "cart microservice.",
   "dependencies": {
     "alert": "^1.0.0",
-    "body-parser": "^1.15.1",
+    "body-parser": "^1.20.1",
     "mysql": "^2.18.1",
     "@grpc/proto-loader": "^0.5.4",
     "grpc": "^1.24.2",
